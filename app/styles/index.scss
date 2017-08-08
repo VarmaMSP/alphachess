@@ -1,0 +1,14 @@
+$white-square: #f0d9b5;
+$black-square: #b58863;
+
+$board-size: 60px * 8;
+$square-size: $board-size / 8;
+
+$square-padding: round($square-size * (1/14));
+
+.chess {
+  width: $board-size * 1.6;
+  margin: 0px auto;
+}
+
+@import "partials/board";
