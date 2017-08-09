@@ -6,14 +6,15 @@ import { ChessJS } from './lib/chess.js';
 import { uuid, chessNotationToIndex, indexToChessNotation } from './lib/utils.js';
 
 import Board from './components/Board/Board';
+import UserUI from './components/userUI/userUI';
 
 import './styles/index.scss';
 
 class Root extends React.Component {
   constructor(props) {
     super(props);
-    this.game = new ChessJS('8/8/8/8/8/8/8/8 w - - 0 1');
-
+    this.game = new ChessJS();
+    this.socket = null;
     let board = this.game.board().map((row, r) => (
       row.map((piece, c) => (
         {
@@ -28,6 +29,7 @@ class Root extends React.Component {
     ));
 
     this.state = {
+      username: null,
       turn: this.game.turn(),
       pausePieceSelection: false,
       selectedSquare: null,
@@ -36,6 +38,14 @@ class Root extends React.Component {
       message: "White's turn",
       board
     };
+
+    this.handleNameSubmit = this.handleNameSubmit.bind(this);
+  }
+
+  handleNameSubmit(name) {
+    this.setState({username: name});
+    this.socket = io();
+    this.socket.on("connect", () => console.log("connected"));
   }
 
   render() {
@@ -45,6 +55,7 @@ class Root extends React.Component {
         <Board
           flip={false} board={board}
         />
+        <UserUI onNameSubmit={this.handleNameSubmit}/>
       </div>
     );
   }

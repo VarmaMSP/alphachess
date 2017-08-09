@@ -1,0 +1,44 @@
+.user-ui {
+  width: $board-size / 2;
+  box-sizing: border-box;
+  padding: 0 $square-size / 6;
+  margin-left: $square-size / 5;
+  background-color: white;
+  float: left;
+
+  .submit {
+    width: 80%;
+    height: $square-size / 2.5;
+    border: 2px solid lighten(blue, 40%);
+    border-radius: 2px;
+    box-sizing: border-box;
+    margin: 0 auto;
+    padding: 3px;
+
+    text-align: center;
+    font-size: 0.8rem;
+    font-family: sans-serif;
+    font-weight: lighter;
+
+    transition: border 0.3s;
+  }
+
+  .submit:hover {
+    border: 2px solid lighten(blue, 30%);
+    cursor: pointer;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    height: $square-size;
+    font-size: 1.5rem;
+    font-style: italic;
+    padding: 0 4px;
+    margin-bottom: 4px;
+    font-family: sans-serif;
+  }
+
+  input[type="text"]:focus {
+    outline: none;
+  }
+}
