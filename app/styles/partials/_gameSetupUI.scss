@@ -1,0 +1,119 @@
+.create-game {
+  width: $board-size / 2;
+  box-sizing: border-box;
+  margin-left: $square-size / 5;
+  font-family: sans-serif;
+  float: left;
+
+  #username {
+    color: darken($black-square, 30%);
+    font-size: 2rem;
+    font-style: italic;
+    margin-bottom: 1.4rem;
+  }
+
+  #opponent-list {
+    box-sizing: border-box;
+    height: $square-size * 4 - 6;
+    border: 1px solid lighten($black-square, 20%);
+    border-radius: 2px;
+    margin-bottom: $square-size * 0.1;
+    overflow-x: hidden;
+    overflow-y: scroll;
+
+    .opponent {
+      height: 2rem;
+      box-sizing: border-box;
+      padding: 5px 0px 0px 10px;
+      border-bottom: 1px solid rgb(230, 230, 230);
+      font-family: sans-serif;
+      font-style: italic;
+      cursor: pointer;
+
+      &.mark {
+        background-color: lighten($white-square, 10%);;
+      }
+    }
+  }
+
+  .label {
+    color: $black-square;
+    font-style: italic;
+    font-size: 0.8rem;
+    margin-bottom: 2px;
+  }
+
+  #send-request {
+    width: 80%;
+    height: $square-size / 2;
+    background-color: lighten($white-square, 0%);
+    border-radius: 3px;
+
+    box-sizing: border-box;
+    margin: 0 auto;
+    padding-top: 4px;
+
+    color: darken($black-square, 20%);
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: lighter;
+
+    transition: background-color 0.5s;
+  }
+
+  #send-request:hover {
+    background-color: darken($white-square, 10%);
+    cursor: pointer;
+  }
+}
+
+.user-ui {
+  width: $board-size / 2;
+  box-sizing: border-box;
+  padding: 0 $square-size / 6;
+  margin-left: $square-size / 5;
+  background-color: white;
+  font-family: sans-serif;
+  float: left;
+
+  .submit {
+    width: 80%;
+    height: $square-size / 2;
+    background-color: lighten($white-square, 0%);
+    border-radius: 3px;
+
+    box-sizing: border-box;
+    margin: 0 auto;
+    padding-top: 4px;
+
+    color: darken($black-square, 20%);
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: lighter;
+
+    transition: background-color 0.5s;
+  }
+
+  .submit:hover {
+    background-color: darken($white-square, 10%);
+    cursor: pointer;
+  }
+
+  input[type="text"] {
+    width: 100%;
+    height: $square-size;
+    color: darken($black-square, 20%);
+    text-align: center;
+    font-size: 1.5rem;
+    font-style: italic;
+    box-sizing: border-box;
+    border: 1.5px solid lighten($black-square, 10%);
+    border-radius: 3px;
+    padding: 0 6px;
+    margin-bottom: 10px;
+  }
+
+  input[type="text"]:focus {
+    outline: none;
+  }
+}

@@ -6,7 +6,7 @@ import { ChessJS } from './lib/chess.js';
 import { uuid, chessNotationToIndex, indexToChessNotation } from './lib/utils.js';
 
 import Board from './components/Board/Board';
-import UserUI from './components/userUI/userUI';
+import GameSetupUI from './components/GameSetupUI/GameSetupUI';
 
 import './styles/index.scss';
 
@@ -14,13 +14,13 @@ class Root extends React.Component {
   constructor(props) {
     super(props);
     this.game = new ChessJS();
-    this.socket = null;
+    this.socket = io();
+
     let board = this.game.board().map((row, r) => (
       row.map((piece, c) => (
         {
-          key: uuid(),
+          key: uuid(), flag: null,
           pos: indexToChessNotation(r, c),
-          flag: null,
           markSquare: false,
           pieceColor: piece ? piece.color : null,
           pieceImageURL: piece ? `/static/img/${piece.type}${piece.color}.png` : null
@@ -39,23 +39,21 @@ class Root extends React.Component {
       board
     };
 
-    this.handleNameSubmit = this.handleNameSubmit.bind(this);
+    this.handleGameSetupComplete = this.handleGameSetupComplete.bind(this);
   }
 
-  handleNameSubmit(name) {
-    this.setState({username: name});
-    this.socket = io();
-    this.socket.on("connect", () => console.log("connected"));
+  handleGameSetupComplete() {
+    console.log("game setup complete");
   }
 
   render() {
     let { board } = this.state;
     return (
       <div className="chess">
-        <Board
-          flip={false} board={board}
+        <Board flip={false} board={board}/>
+        <GameSetupUI socket={this.socket}
+          onGameSetupComplete={this.handleGameSetupComplete}
         />
-        <UserUI onNameSubmit={this.handleNameSubmit}/>
       </div>
     );
   }

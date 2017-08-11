@@ -16,8 +16,30 @@ app.get('/*', (req, res) => {
   res.sendFile(path.join(staticPath, 'index.html'));
 });
 
+let clients = [];
 io.on('connection', socket => {
-  console.log('new connection');
+
+  //join users online
+  socket.on('join', ({ username }, done) => {
+    socket.username = username;
+    clients.push(socket);
+
+    io.emit('users online', {
+      users: clients.map(client => client.username)
+    });
+    done();
+  });
+
+  //disconnect
+  socket.on('disconnect', () => {
+    let i = clients.indexOf(socket);
+    clients.splice(i, 1);
+
+    io.emit('users online', {
+      users: clients.map(client => client.username)
+    });
+  });
+
 });
 
 server.listen(port, err => {
