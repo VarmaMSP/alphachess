@@ -2,15 +2,21 @@ import React from 'react';
 import Square from './presentation/Square';
 
 const Board = props => {
-  let { board, flip } = props;
+  let {
+    board, flip, turn, canMove,
+    onPieceSelect, onPieceMove
+  } = props;
 
   let renderSingleRow = (rowIndex, evenSquareClass, oddSquareClass) => (
     <div>
-      {board[rowIndex].map((square, c) => (
-        <Square {...square}
-          className={c % 2 == 0 ? evenSquareClass : oddSquareClass}
-        />
-      ))}
+      { board[rowIndex].map((square, c) => (
+          <Square {...square} turn={turn} canMove={canMove}
+            className={c % 2 == 0 ? evenSquareClass : oddSquareClass}
+            onPieceMove={props.onPieceMove}
+            onPieceSelect={props.onPieceSelect}
+          />
+        ))
+      }
     </div>
   );
 

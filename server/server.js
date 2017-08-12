@@ -67,6 +67,11 @@ io.on('connection', socket => {
     });
   });
 
+  socket.on('move', ({ gameId, selectedSquare, to, flag }) => {
+    console.log(gameId);
+    socket.broadcast.to(gameId).emit('make move', {selectedSquare, to, flag});
+  });
+
 });
 
 server.listen(port, err => {

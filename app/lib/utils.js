@@ -25,3 +25,34 @@ export function movePiece(board, from, to) {
   board[r][c].pieceColor = null;
   board[r][c].pieceImageURL = null;
 }
+
+export function getBoardState(game, turn) {
+  if (! game.game_over()) {
+    return [`${turn === 'w' ? "Black's" : "White's"} turn.`, false];
+  }
+  if (game.in_checkmate()) {
+    return [`${turn === 'w' ? 'White' : 'Black'} won by checkmate`, true];
+  }
+  if (game.in_stalemate()) {
+    return [`${turn === 'w' ? 'White' : 'Black'} won by stalemate`, true];
+  }
+  if (game.in_threefold_repetition()) {
+    return ['Game ended in draw (threefold repetition)', true];
+  }
+  if (game.in_draw()) {
+    return ['Game ended in draw', true];
+  }
+}
+
+export function addMove(moveHistory, san) {
+  let l = moveHistory.length;
+  if (l > 0) {
+    if (moveHistory[l - 1].b) {
+      moveHistory[l] = { w: san };
+    } else {
+      moveHistory[l - 1].b = san;
+    }
+  } else {
+    moveHistory[0] = { w: san, b: null };
+  }
+}

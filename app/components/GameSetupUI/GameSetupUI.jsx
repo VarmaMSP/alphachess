@@ -24,6 +24,7 @@ export default class GameSetupUI extends React.Component {
 
     //Get users online
     socket.on('users online', ({ users }) => {
+      console.log(users);
       this.setState({
         usersOnline: users.filter(user => user !== username)
       });
