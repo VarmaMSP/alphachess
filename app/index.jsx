@@ -30,30 +30,32 @@ class Root extends React.Component {
 
     this.state = {
       username: null,
+      opponent: null,
+      color: null,
+      gameId: null,
+
       turn: this.game.turn(),
       pausePieceSelection: false,
       selectedSquare: null,
       promotePawn: null,
       moveHistory: [],
-      message: "White's turn",
+      message: "",
       board
     };
-
-    this.handleGameSetupComplete = this.handleGameSetupComplete.bind(this);
-  }
-
-  handleGameSetupComplete() {
-    console.log("game setup complete");
   }
 
   render() {
-    let { board } = this.state;
+    let { gameId, board, color } = this.state;
+    console.log(username);
     return (
       <div className="chess">
-        <Board flip={false} board={board}/>
-        <GameSetupUI socket={this.socket}
-          onGameSetupComplete={this.handleGameSetupComplete}
-        />
+        <Board flip={color === 'b'} board={board}/>
+        { gameId
+          ? null
+          : <GameSetupUI socket={this.socket}
+              onGameSetupComplete={playerInfo => this.setState(playerInfo)}
+            />
+        }
       </div>
     );
   }

@@ -6,7 +6,7 @@ export default class CreateGame extends React.Component {
     this.state = { selectedUser: -1 };
 
     this.handleOpponentSelect = this.handleOpponentSelect.bind(this);
-    this.handleSend = this.handleSend.bind(this);
+    this.handleSelectionComplete = this.handleSelectionComplete.bind(this);
   }
 
   handleOpponentSelect(i) {
@@ -18,13 +18,13 @@ export default class CreateGame extends React.Component {
     }
   }
 
-  handleSend(e) {
+  handleSelectionComplete(e) {
     e.preventDefault();
 
     let { selectedUser } = this.state;
-    let { onSendGameRequest, usersOnline } = this.props;
+    let { onCreateGame, usersOnline } = this.props;
     if (selectedUser >= 0) {
-      onSendGameRequest(usersOnline[selectedUser]);
+      onCreateGame(usersOnline[selectedUser]);
     }
   }
 
@@ -46,8 +46,8 @@ export default class CreateGame extends React.Component {
             ))
           }
         </div>
-        <div id="send-request" onClick={this.handleSend}>
-          Send Request
+        <div id="send-request" onClick={this.handleSelectionComplete}>
+          Start game
         </div>
       </div>
     );

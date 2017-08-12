@@ -1,7 +1,8 @@
 const path     = require('path'),
       express  = require('express'),
       socketIO = require('socket.io'),
-      http     = require('http');
+      http     = require('http'),
+      uuid     = require('uuid/v1');
 
 const staticPath = path.join(__dirname, '../static');
 const port       = 8000;
@@ -17,6 +18,7 @@ app.get('/*', (req, res) => {
 });
 
 let clients = [];
+
 io.on('connection', socket => {
 
   //join users online
@@ -24,7 +26,7 @@ io.on('connection', socket => {
     socket.username = username;
     clients.push(socket);
 
-    io.emit('users online', {
+    io.sockets.emit('users online', {
       users: clients.map(client => client.username)
     });
     done();
@@ -35,8 +37,33 @@ io.on('connection', socket => {
     let i = clients.indexOf(socket);
     clients.splice(i, 1);
 
-    io.emit('users online', {
+    io.sockets.emit('users online', {
       users: clients.map(client => client.username)
+    });
+  });
+
+  socket.on('create game', ({ opponent }) => {
+    let gameId = uuid();
+    let opponentSocket = null;
+
+    let x = clients.indexOf(socket);
+    let y;
+    for (let i = 0; i < clients.length; ++i) if (clients[i].username === opponent) {
+        y = i;
+        break;
+    }
+
+    clients[x].join(gameId);
+    clients[y].join(gameId);
+
+    clients[x].emit('start game', {color: 'w', opponent: clients[y].username, gameId}, () => {
+      clients[y].emit('start game', {color: 'b', opponent: clients[x].username, gameId}, () => {
+        clients.splice(x, 1);
+        clients.splice(y, 1);
+        io.sockets.emit('users online', {
+          users: clients.map(client => client.username)
+        });
+      });
     });
   });
 
