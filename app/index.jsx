@@ -6,7 +6,7 @@ import { ChessJS } from './lib/chess.js';
 import {
   uuid, chessNotationToIndex, getBoardState,
   indexToChessNotation, addMove, movePiece
-} from './lib/utils.js';
+} from './lib/utils';
 
 import Board from './components/Board/Board';
 import ChessUI from './components/ChessUI/ChessUI';
