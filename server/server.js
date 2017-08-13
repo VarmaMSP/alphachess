@@ -68,8 +68,12 @@ io.on('connection', socket => {
   });
 
   socket.on('move', ({ gameId, selectedSquare, to, flag }) => {
-    console.log(gameId);
+    console.log('move', gameId);
     socket.broadcast.to(gameId).emit('make move', {selectedSquare, to, flag});
+  });
+
+  socket.on('promote pawn', ({ gameId, selectedSquare, promotePawn, piece }) => {
+    socket.broadcast.to(gameId).emit('pawn promotion', {selectedSquare, promotePawn, piece});
   });
 
 });

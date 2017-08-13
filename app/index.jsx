@@ -38,7 +38,7 @@ class Root extends React.Component {
       gameId: null,
 
       turn: this.game.turn(),
-      pausePieceSelection: null,
+      pausePieceSelection: false,
       selectedSquare: null,
       promotePawn: null,
       moveHistory: [],
@@ -46,19 +46,20 @@ class Root extends React.Component {
       board
     };
 
-    this.handleGameSetupComplete = this.handleGameSetupComplete.bind(this);
-    this.handlePieceSelect = this.handlePieceSelect.bind(this);
-    this.handlePieceMove = this.handlePieceMove.bind(this);
+    this.handleGameSetupComplete    = this.handleGameSetupComplete.bind(this);
+    this.handlePieceSelect          = this.handlePieceSelect.bind(this);
+    this.handlePieceMove            = this.handlePieceMove.bind(this);
+    this.handlePromotionPieceSelect = this.handlePromotionPieceSelect.bind(this);
   }
 
   handleGameSetupComplete(info) {
     this.socket.on('make move', ({ selectedSquare, to, flag }) => {
       this.handlePieceMove(selectedSquare, false)(to, flag);
     });
-    this.setState({
-      ...info,
-      pausePieceSelection: info.color !== this.state.turn
+    this.socket.on('pawn promotion', ({ selectedSquare, promotePawn, piece }) => {
+      this.handlePromotionPieceSelect(selectedSquare, promotePawn, false)(piece);
     });
+    this.setState(info);
   }
 
   handlePieceSelect(pos) {
@@ -107,13 +108,10 @@ class Root extends React.Component {
     });
   }
 
-  handlePieceMove(selectedSquare, emitMessage=true) {
+  handlePieceMove(selectedSquare, emitEvent=true) {
     return (to, flag) => {
       this.setState(prevState => {
         let { board, turn, moveHistory, gameId } = prevState;
-        let fromPos = chessNotationToIndex(selectedSquare);
-        let toPos   = chessNotationToIndex(to);
-
         //clear marked squares
         board.forEach(row => {
           row.forEach(square => {
@@ -124,7 +122,6 @@ class Root extends React.Component {
             }
           })
         });
-        movePiece(board, fromPos, toPos);
 
         if (flag === 'p') { //pawn promotion
           return {
@@ -135,6 +132,9 @@ class Root extends React.Component {
           }
         }
 
+        let fromPos = chessNotationToIndex(selectedSquare);
+        let toPos   = chessNotationToIndex(to);
+        movePiece(board, fromPos, toPos);
         if (flag === 'e') { //en passant capture
           let [ R, C ] = toPos;
           R += (turn === 'w' ? 1 : -1);
@@ -156,12 +156,11 @@ class Root extends React.Component {
             movePiece(board, [0, 0], [0, 3]); //move rooke from 'a8' to 'd8'
           }
         }
-        let X = this.game.move({from: selectedSquare, to});
-        console.log(X);
-        addMove(moveHistory, X.san);
+        let { san } = this.game.move({from: selectedSquare, to});
+        addMove(moveHistory, san);
 
         let [ message, pausePieceSelection ] = getBoardState(this.game, turn);
-        if (emitMessage) {
+        if (emitEvent) {
           this.socket.emit('move', {selectedSquare, to, flag, gameId});
         }
         return {
@@ -175,15 +174,53 @@ class Root extends React.Component {
     }
   }
 
+  handlePromotionPieceSelect(selectedSquare, promotePawn, emitEvent=true) {
+    return (piece) => {
+      this.setState(prevState => {
+        let { turn, board, moveHistory, gameId } = prevState;
+        let fromPos = chessNotationToIndex(selectedSquare);
+        let toPos   = chessNotationToIndex(promotePawn);
+        movePiece(board, fromPos, toPos);
+
+        let [ r, c ] = toPos;
+        board[r][c].pieceImageURL = `/static/img/${piece}${turn}.png`;
+        console.log(selectedSquare, promotePawn, piece);
+        let { san } = this.game.move({
+          from: selectedSquare, to: promotePawn,
+          promotion: piece
+        });
+        addMove(moveHistory, san);
+        if (emitEvent) {
+          this.socket.emit('promote pawn', {gameId, selectedSquare, promotePawn, piece});
+        }
+
+        let [ message, pausePieceSelection ] = getBoardState(this.game, turn);
+        return {
+          board, message,
+          pausePieceSelection,
+          promotePawn: null,
+          selectedSquare: null,
+          turn: turn === 'w' ? 'b' : 'w',
+          moveHistory
+        };
+      });
+    }
+  }
+
   render() {
-    let { gameId, board, color, turn, selectedSquare } = this.state;
+    let {
+      gameId, board, color, turn, selectedSquare,
+      promotePawn, pausePieceSelection
+    } = this.state;
     return (
       <div className="chess">
         <Board
           board={board} turn={turn}
           flip={color === 'b'} canMove={turn === color}
+          promotePawn={promotePawn}
           onPieceSelect={this.handlePieceSelect}
-          onPieceMove={this.handlePieceMove(selectedSquare)}
+          onPieceMove={pausePieceSelection ? null : this.handlePieceMove(selectedSquare)}
+          onPromotionPieceSelect={this.handlePromotionPieceSelect(selectedSquare, promotePawn)}
         />
         { gameId
           ? null

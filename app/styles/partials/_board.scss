@@ -35,3 +35,37 @@
     pointer-events: none;
   }
 }
+
+.promotion-model {
+  position: absolute;
+  top: 3 * $square-size;
+  left: $square-size;
+  border: 2px solid darken(grey, 10%);
+  border-radius: 3px;
+  background-color: rgb(230, 230, 230);
+
+  box-sizing: border-box;
+  height: $promotion-model-height;
+  width: $promotion-model-width;
+  padding: $square-size * 0.3 $square-size * 0.1;
+
+  .promotion-piece {
+    display: inline-block;
+    box-sizing: border-box;
+    height: $square-size * 1.4;
+    width: $square-size * 1.4;
+    padding: $square-size * 0.2;
+
+    .piece-image {
+      height: $square-size;
+      width: $square-size;
+    }
+
+    &:hover {
+      padding: ($square-size * 0.2) - 1;
+      border-color: darken(rgb(230, 230, 230), 30%);
+      border: 1px solid darken(rgb(230, 230, 230), 40%);
+      border-radius: 1px;
+    }
+  }
+}

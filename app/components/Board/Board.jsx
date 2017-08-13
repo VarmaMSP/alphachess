@@ -1,10 +1,11 @@
 import React from 'react';
 import Square from './presentation/Square';
+import PromotionModal from './presentation/PromotionModal';
 
 const Board = props => {
   let {
-    board, flip, turn, canMove,
-    onPieceSelect, onPieceMove
+    board, flip, turn, canMove, promotePawn,
+    onPieceSelect, onPieceMove, onPromotionPieceSelect
   } = props;
 
   let renderSingleRow = (rowIndex, evenSquareClass, oddSquareClass) => (
@@ -32,6 +33,12 @@ const Board = props => {
       { renderSingleRow(5, blackSquareClass, whiteSquareClass) }
       { renderSingleRow(6, whiteSquareClass, blackSquareClass) }
       { renderSingleRow(7, blackSquareClass, whiteSquareClass) }
+      { promotePawn
+        ? <PromotionModal color={turn} flip={flip}
+            onPromotionPieceSelect={onPromotionPieceSelect}
+          />
+        : null
+      }
     </div>
   );
 }

@@ -6,6 +6,10 @@ $square-size: $board-size / 8;
 
 $square-padding: round($square-size * (1/14));
 
+$promotion-model-height: 2 * $square-size;
+$promotion-model-width: 6 * $square-size;
+
+
 .chess {
   width: $board-size * 1.6;
   margin: 0px auto;
