@@ -37,7 +37,8 @@ export default class GameSetupUI extends React.Component {
 
       this.props.onGameSetupComplete({
         username: username,
-        color, gameId, opponent
+        color, gameId, opponent,
+        message: color === 'w' ? 'Your turn.' : 'Opponent turn',
       });
       done();
     });

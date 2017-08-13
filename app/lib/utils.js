@@ -26,15 +26,16 @@ export function movePiece(board, from, to) {
   board[r][c].pieceImageURL = null;
 }
 
-export function getBoardState(game, turn) {
+export function getBoardState(game, turn, color) {
+  let humanize = s => `${s === color ? 'You' : 'Opponent'}`;
   if (! game.game_over()) {
-    return [`${turn === 'w' ? "Black's" : "White's"} turn.`, false];
+    return [`${turn === 'w' ? humanize('b') : humanize('w')} turn.`, false];
   }
   if (game.in_checkmate()) {
-    return [`${turn === 'w' ? 'White' : 'Black'} won by checkmate`, true];
+    return [`${turn === 'w' ? humanize('w') : humanize('b')} won by checkmate`, true];
   }
   if (game.in_stalemate()) {
-    return [`${turn === 'w' ? 'White' : 'Black'} won by stalemate`, true];
+    return [`${turn === 'w' ? humanize('w') : humanize('b')} won by stalemate`, true];
   }
   if (game.in_threefold_repetition()) {
     return ['Game ended in draw (threefold repetition)', true];

@@ -112,7 +112,7 @@ class Root extends React.Component {
   handlePieceMove(selectedSquare, emitEvent=true) {
     return (to, flag) => {
       this.setState(prevState => {
-        let { board, turn, moveHistory, gameId } = prevState;
+        let { board, turn, moveHistory, gameId, color } = prevState;
         //clear marked squares
         board.forEach(row => {
           row.forEach(square => {
@@ -160,7 +160,7 @@ class Root extends React.Component {
         let { san } = this.game.move({from: selectedSquare, to});
         addMove(moveHistory, san);
 
-        let [ message, pausePieceSelection ] = getBoardState(this.game, turn);
+        let [ message, pausePieceSelection ] = getBoardState(this.game, turn, color);
         if (emitEvent) {
           this.socket.emit('move', {selectedSquare, to, flag, gameId});
         }
@@ -178,7 +178,7 @@ class Root extends React.Component {
   handlePromotionPieceSelect(selectedSquare, promotePawn, emitEvent=true) {
     return (piece) => {
       this.setState(prevState => {
-        let { turn, board, moveHistory, gameId } = prevState;
+        let { turn, board, moveHistory, gameId, color } = prevState;
         let fromPos = chessNotationToIndex(selectedSquare);
         let toPos   = chessNotationToIndex(promotePawn);
         movePiece(board, fromPos, toPos);
@@ -195,7 +195,7 @@ class Root extends React.Component {
           this.socket.emit('promote pawn', {gameId, selectedSquare, promotePawn, piece});
         }
 
-        let [ message, pausePieceSelection ] = getBoardState(this.game, turn);
+        let [ message, pausePieceSelection ] = getBoardState(this.game, turn, color);
         return {
           board, message,
           pausePieceSelection,
@@ -210,8 +210,8 @@ class Root extends React.Component {
 
   render() {
     let {
-      gameId, board, color, turn, selectedSquare,
-      promotePawn, pausePieceSelection, message, moveHistory
+      gameId, board, color, turn, selectedSquare, username,
+      promotePawn, pausePieceSelection, message, moveHistory, opponent
     } = this.state;
     return (
       <div className="chess">
@@ -224,7 +224,11 @@ class Root extends React.Component {
           onPromotionPieceSelect={this.handlePromotionPieceSelect(selectedSquare, promotePawn)}
         />
         { gameId
-          ? <ChessUI turn={turn} message={message} moveHistory={moveHistory}/>
+          ? <ChessUI
+              turn={turn} message={message}
+              moveHistory={moveHistory} color={color}
+              user={username} opponent={opponent}
+            />
           : <GameSetupUI socket={this.socket}
               onGameSetupComplete={this.handleGameSetupComplete}
             />

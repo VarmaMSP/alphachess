@@ -54,11 +54,11 @@ export default class ChessUI extends React.Component {
   }
 
   render() {
-    let { moveHistory, message } = this.props;
+    let { moveHistory, message, user, opponent, color } = this.props;
     return (
       <div className="chess-ui">
         <div className="player ">
-          <img src="/static/img/pb.png"/>
+          <div className="username">{opponent}</div>
         </div>
         <div className="move-history">
           { moveHistory.map((move, i) => (
@@ -74,7 +74,7 @@ export default class ChessUI extends React.Component {
           />
         </div>
         <div className="player">
-          <img src="/static/img/pw.png"/>
+          <div className="username">{user}</div>
         </div>
         <div className="message">
           <h4>{message}</h4>
