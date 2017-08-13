@@ -9,6 +9,7 @@ import {
 } from './lib/utils.js';
 
 import Board from './components/Board/Board';
+import ChessUI from './components/ChessUI/ChessUI';
 import GameSetupUI from './components/GameSetupUI/GameSetupUI';
 
 import './styles/index.scss';
@@ -210,7 +211,7 @@ class Root extends React.Component {
   render() {
     let {
       gameId, board, color, turn, selectedSquare,
-      promotePawn, pausePieceSelection
+      promotePawn, pausePieceSelection, message, moveHistory
     } = this.state;
     return (
       <div className="chess">
@@ -223,7 +224,7 @@ class Root extends React.Component {
           onPromotionPieceSelect={this.handlePromotionPieceSelect(selectedSquare, promotePawn)}
         />
         { gameId
-          ? null
+          ? <ChessUI turn={turn} message={message} moveHistory={moveHistory}/>
           : <GameSetupUI socket={this.socket}
               onGameSetupComplete={this.handleGameSetupComplete}
             />
