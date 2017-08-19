@@ -1,2 +1,2 @@
 # alphachess
-A internet chess server built with react, express and sozket.io.
+A internet chess server built with react, express and socket.io.
